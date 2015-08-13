@@ -1,0 +1,7 @@
+---
+applications:
+- name: db-order-service
+  memory: 512M
+  instances: 1
+  path: target/order-service-0.1.0.jar
+  services: [ ossql ]
