@@ -13,7 +13,9 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -25,66 +27,65 @@ import static org.junit.Assert.*;
         DbUnitTestExecutionListener.class})
 @WebIntegrationTest(value = "server.port=9876")
 @DatabaseSetup("testData.xml")
-public class OrderControllerTest {
-
-    @Autowired
-    OrderController orderController;
+public class HoldingControllerTest {
 
     @Autowired
     HoldingController holdingController;
 
     @Test
     public void testCount() {
-        assertEquals(3, orderController.count());
+        assertEquals(1, holdingController.count());
     }
 
     @Test
     public void testFind() {
-        Long id = 3L;
-        Order o = orderController.findById(id);
-        assertNotNull(o);
-        assertNotNull(o.getHolding());
-        assertEquals(id, o.getOrderId());
-        o = orderController.findById(12345L);
-        assertNull(o);
+        Long id = 1L;
+        Holding h = holdingController.findById(id);
+        assertNotNull(h);
+        assertEquals(id, h.getHoldingId());
+        List<Order> orders = h.getOrders();
+        assertNotNull(orders);
+        assertEquals(3, orders.size());
+
+        h = holdingController.findById(12345L);
+        assertNull(h);
     }
 
     @Test
     public void testSaveAndFindAndDelete() {
-        Holding h = holdingController.findById(1L);
+        Holding h = new Holding();
+        h.setAccountId(1L);
+        h.setPurchaseDate(new Date());
+        h.setPurchasePrice(12.34f);
+        h.setQuantity(5);
+        h.setQuoteSymbol("GOOG");
 
         Order o = new Order();
-        o.setAccountId(1234L);
+        o.setAccountId(1L);
         o.setCompletionDate(new Date());
         o.setOpenDate(new Date());
         o.setOrderFee(23.45f);
         o.setOrderStatus("Closed");
         o.setOrderType("Sell");
-        o.setPrice(56.78f);
-        o.setQuantity(234);
-        o.setQuoteSymbol("Foo");
+        o.setPrice(12.34f);
+        o.setQuantity(5);
+        o.setQuoteSymbol("GOOG");
         o.setHolding(h);
 
-        Order o2 = orderController.save(o);
-        assertNotNull(o2);
+        List<Order> orders = new ArrayList<Order>();
+        orders.add(o);
+        h.setOrders(orders);
 
-        Order o3 = orderController.findById(o2.getOrderId());
-        assertNotNull(o3);
+        Holding h2 = holdingController.save(h);
+        assertNotNull(h2);
 
-        Long id = o3.getOrderId();
-        assertNotNull(id);
-        assertEquals(new Long(1234), o3.getAccountId());
-        assertNotNull(o3.getCompletionDate());
-        assertNotNull(o3.getOpenDate());
-        assertEquals("23.45", "" + o3.getOrderFee());
-        assertEquals("Closed", o3.getOrderStatus());
-        assertEquals("Sell", o3.getOrderType());
-        assertEquals("56.78", "" + o3.getPrice());
-        assertEquals(234, o3.getQuantity());
-        assertEquals("Foo", o3.getQuoteSymbol());
+        Holding h3 = holdingController.findById(h2.getHoldingId());
+        assertNotNull(h3);
+        assertNotNull(h3.getOrders());
+        assertEquals(1, h3.getOrders().size());
 
-        orderController.delete(o3);
+        holdingController.delete(h3);
 
-        //assertNull(orderController.findById(o2.getOrderId()));
+        assertNull(holdingController.findById(h3.getHoldingId()));
     }
 }

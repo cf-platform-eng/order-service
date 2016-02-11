@@ -1,154 +1,166 @@
+/*
+ * Copyright 2002-2012 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.springframework.nanotrader.order;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
 @Entity
 @Table(name = "Orders")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "orderId", scope = Order.class)
 public class Order implements Serializable {
 
-	public enum OrderStatus {
-		open, cancelled, closed, completed
-	}
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long orderId = -1L;
 
-	public enum OrderType {
-		buy, sell
-	}
+    public Long getOrderId() {
+        return this.orderId;
+    }
 
-	private static final long serialVersionUID = 1L;
+    public void setOrderId(Long l) {
+        this.orderId = l;
+    }
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long id = new Long(-1);
+    @NotNull
+    private Long accountId;
 
-	public Long getId() {
-		return this.id;
-	}
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "holdingId")
+    @NotNull
+    private Holding holding;
 
-	public void setId(Long id) {
-		if (id != null) {
-			this.id = id;
-		}
-	}
+    private float orderFee;
 
-	private Long accountId;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+    private Date completionDate;
 
-	private float orderfee;
+    private String orderType;
 
-	private Date completiondate;
+    private String orderStatus;
 
-	private OrderType ordertype;
+    private float price;
 
-	private OrderStatus orderstatus;
+    @NotNull
+    private int quantity;
 
-	private float price;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+    private Date openDate;
 
-	private int quantity;
+    private String quoteSymbol;
 
-	private Date opendate;
+    public String getQuoteSymbol() {
+        return quoteSymbol;
+    }
 
-	private String symbol;
+    public void setQuoteSymbol(String s) {
+        this.quoteSymbol = s;
+    }
 
-	public Long getAccountid() {
-		return accountId;
-	}
+    public Long getAccountId() {
+        return accountId;
+    }
 
-	public void setAccountid(Long l) {
-		this.accountId = l;
-	}
+    public void setAccountId(Long l) {
+        this.accountId = l;
+    }
 
-	public float getOrderfee() {
-		return orderfee;
-	}
+    public Holding getHolding() {
+        return holding;
+    }
 
-	public void setOrderfee(float f) {
-		this.orderfee = f;
-	}
+    public void setHolding(Holding h) {
+        this.holding = h;
+    }
 
-	public Date getCompletiondate() {
-		return completiondate;
-	}
+    public float getOrderFee() {
+        return orderFee;
+    }
 
-	public void setCompletiondate(Date d) {
-		this.completiondate = d;
-	}
+    public void setOrderFee(float f) {
+        this.orderFee = f;
+    }
 
-	public OrderType getOrdertype() {
-		return ordertype;
-	}
+    public Date getCompletionDate() {
+        return completionDate;
+    }
 
-	public void setOrdertype(OrderType o) {
-		this.ordertype = o;
-	}
+    public void setCompletionDate(Date d) {
+        this.completionDate = d;
+    }
 
-	public OrderStatus getOrderstatus() {
-		return orderstatus;
-	}
+    public String getOrderType() {
+        return orderType;
+    }
 
-	public void setOrderstatus(OrderStatus o) {
-		this.orderstatus = o;
-	}
+    public void setOrderType(String s) {
+        this.orderType = s;
+    }
 
-	public float getPrice() {
-		return price;
-	}
+    public String getOrderStatus() {
+        return orderStatus;
+    }
 
-	public void setPrice(float f) {
-		this.price = f;
-	}
+    public void setOrderStatus(String s) {
+        this.orderStatus = s;
+    }
 
-	public int getQuantity() {
-		return quantity;
-	}
+    public float getPrice() {
+        return price;
+    }
 
-	public void setQuantity(int i) {
-		this.quantity = i;
-	}
+    public void setPrice(float f) {
+        this.price = f;
+    }
 
-	public Date getOpendate() {
-		return opendate;
-	}
+    public int getQuantity() {
+        return quantity;
+    }
 
-	public void setOpendate(Date d) {
-		this.opendate = d;
-	}
+    public void setQuantity(int i) {
+        this.quantity = i;
+    }
 
-	public String getSymbol() {
-		return symbol;
-	}
+    public Date getOpenDate() {
+        return openDate;
+    }
 
-	public void setSymbol(String s) {
-		this.symbol = s;
-	}
+    public void setOpenDate(Date d) {
+        this.openDate = d;
+    }
 
-	@Override
-	public String toString() {
-		return "Order [id=" + id + ", orderfee=" + orderfee
-				+ ", completiondate=" + completiondate + ", ordertype="
-				+ ordertype + ", orderstatus=" + orderstatus + ", price="
-				+ price + ", quantity=" + quantity + ", opendate=" + opendate
-				+ "]";
-	}
+    public String toString() {
+        return ReflectionToStringBuilder.toString(this,
+                ToStringStyle.SHORT_PREFIX_STYLE);
+    }
 
-	public int hashCode() {
-		return getId().intValue();
-	}
+    public int hashCode() {
+        return getOrderId().intValue();
+    }
 
-	public boolean equals(Object o) {
-		if (o == null) {
-			return false;
-		}
-
-		if (!(o instanceof Order)) {
-			return false;
-		}
-		return o.hashCode() == hashCode();
-	}
+    public boolean equals(Object o) {
+        return o != null && o instanceof Order && o.hashCode() == hashCode();
+    }
 
 }
