@@ -43,6 +43,7 @@ public class HoldingControllerTest {
         Holding h = holdingController.findById(id);
         assertNotNull(h);
         assertEquals(id, h.getHoldingId());
+        assertEquals("4", "" + h.getAccountId());
         List<Order> orders = h.getOrders();
         assertNotNull(orders);
         assertEquals(3, orders.size());
@@ -84,8 +85,17 @@ public class HoldingControllerTest {
         assertNotNull(h3.getOrders());
         assertEquals(1, h3.getOrders().size());
 
-        holdingController.delete(h3);
+        holdingController.delete(h3.getHoldingId());
 
         assertNull(holdingController.findById(h3.getHoldingId()));
+    }
+
+    @Test
+    public void testFindByAccountId() {
+        Long id = 4L;
+        List<Holding> h = holdingController.findByAccountId(id);
+        assertNotNull(h);
+        assertTrue(h.size() > 0);
+        assertEquals(id, h.get(0).getAccountId());
     }
 }

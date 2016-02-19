@@ -3,6 +3,8 @@ package org.springframework.nanotrader.order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/holdings")
 public class HoldingController {
@@ -25,9 +27,14 @@ public class HoldingController {
         return holdingRepository.save(holding);
     }
 
-    @RequestMapping(value = "/", method = RequestMethod.DELETE)
-    public void delete(@RequestBody Holding holding) {
-        holdingRepository.delete(holding);
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    public void delete(@PathVariable Long id) {
+        holdingRepository.delete(id);
+    }
+
+    @RequestMapping(value = "/accounts/{accountId}", method = RequestMethod.GET)
+    public List<Holding> findByAccountId(@PathVariable Long accountId) {
+        return holdingRepository.findByAccountId(accountId);
     }
 
 }
