@@ -14,6 +14,7 @@ import org.springframework.test.context.support.DirtiesContextTestExecutionListe
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 
 import java.util.Date;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -83,8 +84,11 @@ public class OrderControllerTest {
         assertEquals(234, o3.getQuantity());
         assertEquals("Foo", o3.getQuoteSymbol());
 
-        orderController.delete(o3);
-
-        //assertNull(orderController.findById(o2.getOrderId()));
+        List<Order> l = orderController.findByAccountId(o3.getAccountId());
+        assertNotNull(l);
+        assertTrue(l.size() > 0);
+        for (Order oo : l) {
+            assertEquals(o3.getAccountId(), oo.getAccountId());
+        }
     }
 }

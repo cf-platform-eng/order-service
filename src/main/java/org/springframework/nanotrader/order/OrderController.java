@@ -3,6 +3,8 @@ package org.springframework.nanotrader.order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/orders")
 public class OrderController {
@@ -15,14 +17,14 @@ public class OrderController {
         return orderRepository.count();
     }
 
-    @RequestMapping(value = "/", method = RequestMethod.DELETE)
-    public void delete(@RequestBody Order order) {
-        orderRepository.delete(order);
-    }
-
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public Order findById(@PathVariable Long id) {
         return orderRepository.findOne(id);
+    }
+
+    @RequestMapping(value = "/accounts/{accountId}", method = RequestMethod.GET)
+    public List<Order> findByAccountId(@PathVariable Long accountId) {
+        return orderRepository.findByAccountId(accountId);
     }
 
     @RequestMapping(value = "/", method = RequestMethod.POST)

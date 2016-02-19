@@ -15,9 +15,10 @@
  */
 package org.springframework.nanotrader.order;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * @author Gary Russell
@@ -25,26 +26,8 @@ import org.springframework.stereotype.Repository;
  */
 
 @Repository
-public interface OrderRepository extends JpaSpecificationExecutor<Order>,
-        JpaRepository<Order, Long> {
+public interface OrderRepository extends
+        CrudRepository<Order, Long> {
 
-//    @Query(value = "UPDATE Order o SET o.orderStatus = 'completed' WHERE o.accountId = ?1 AND o.orderStatus = 'closed'")
-//    int updateClosedOrders(Long accountId);
-//
-//    @Query("SELECT o FROM Order o WHERE o.orderStatus = ?2 AND o.accountId  = ?1 order by orderId DESC")
-//    List<Order> findOrdersByStatus(Long accountId, String status);
-//
-//    @Query("SELECT o FROM Order o WHERE o.accountId  = ?1 order by orderId DESC")
-//    List<Order> findOrdersByAccountAccountid_Accountid(Long accountId);
-//
-//    @Query("SELECT o FROM Order o WHERE o.id = ?1 AND o.accountId  = ?2")
-//    Order findByOrderidAndAccountAccountid(Long orderId,
-//                                           Integer accountId);
-//
-//    @Query("SELECT count(o) FROM Order o WHERE o.accountId  = ?1")
-//    Long findCountOfOrders(Integer accountId);
-//
-//    @Query("SELECT count(o) FROM Order o WHERE o.accountId  = ?1 and o.orderStatus = ?2")
-//    Long findCountOfOrders(Integer accountId, String status);
-
+    List<Order> findByAccountId(Long accountId);
 }
