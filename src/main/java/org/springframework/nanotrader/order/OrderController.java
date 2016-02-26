@@ -12,18 +12,24 @@ public class OrderController {
     @Autowired
     OrderRepository orderRepository;
 
-    @RequestMapping("/count")
-    public long count() {
-        return orderRepository.count();
-    }
-
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public Order findById(@PathVariable Long id) {
         return orderRepository.findOne(id);
     }
 
-    @RequestMapping(value = "/accounts/{accountId}", method = RequestMethod.GET)
-    public List<Order> findByAccountId(@PathVariable Long accountId) {
+    @RequestMapping(method = RequestMethod.GET)
+    public List<Order> search(
+            @RequestParam(value = "accountId", required = false) Long accountId,
+            @RequestParam(value = "orderStatus", required = false) String orderStatus) {
+
+        if (accountId == null && orderStatus == null) {
+            return null;
+        }
+
+        if (accountId != null && orderStatus != null) {
+            return orderRepository.findByAccountIdAndOrderStatus(accountId, orderStatus);
+        }
+
         return orderRepository.findByAccountId(accountId);
     }
 

@@ -35,11 +35,6 @@ public class OrderControllerTest {
     HoldingController holdingController;
 
     @Test
-    public void testCount() {
-        assertEquals(3, orderController.count());
-    }
-
-    @Test
     public void testFind() {
         Long id = 3L;
         Order o = orderController.findById(id);
@@ -84,11 +79,27 @@ public class OrderControllerTest {
         assertEquals(234, o3.getQuantity());
         assertEquals("Foo", o3.getQuoteSymbol());
 
-        List<Order> l = orderController.findByAccountId(o3.getAccountId());
+        List<Order> l = orderController.search(o3.getAccountId(), null);
         assertNotNull(l);
         assertTrue(l.size() > 0);
         for (Order oo : l) {
             assertEquals(o3.getAccountId(), oo.getAccountId());
         }
+
+        List<Order> l2 = orderController.search(123L, null);
+        assertNotNull(l2);
+        assertTrue(l2.size() == 0);
+
+        List<Order> l3 = orderController.search(o3.getAccountId(), "Closed");
+        assertNotNull(l3);
+        assertTrue(l3.size() > 0);
+        for (Order oo : l3) {
+            assertEquals(o3.getAccountId(), oo.getAccountId());
+            assertEquals("Closed", oo.getOrderStatus());
+        }
+
+        List<Order> l4 = orderController.search(o3.getAccountId(), "foo");
+        assertNotNull(l4);
+        assertTrue(l4.size() == 0);
     }
 }

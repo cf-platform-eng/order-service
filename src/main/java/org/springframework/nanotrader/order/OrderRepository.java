@@ -30,4 +30,6 @@ public interface OrderRepository extends
         CrudRepository<Order, Long> {
 
     List<Order> findByAccountId(Long accountId);
+
+    List<Order> findByAccountIdAndOrderStatus(Long accountId, String orderStatus);
 }
