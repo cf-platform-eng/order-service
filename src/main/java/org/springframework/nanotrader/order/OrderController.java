@@ -33,8 +33,29 @@ public class OrderController {
         return orderRepository.findByAccountId(accountId);
     }
 
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    public Iterable<Order> findAll() {
+        return orderRepository.findAll();
+    }
+
     @RequestMapping(value = "/", method = RequestMethod.POST)
     public Order save(@RequestBody Order order) {
         return orderRepository.save(order);
+    }
+
+    @RequestMapping(value = "/count", method = RequestMethod.GET)
+    public Long findCountOfOrders(
+            @RequestParam(value = "accountId", required = true) Long accountId,
+            @RequestParam(value = "orderStatus", required = false) String orderStatus) {
+
+        if (accountId != null && orderStatus != null) {
+            return orderRepository.findCountOfOrders(accountId, orderStatus);
+        }
+
+        if (accountId != null) {
+            return orderRepository.findCountOfOrders(accountId);
+        }
+
+        return orderRepository.count();
     }
 }

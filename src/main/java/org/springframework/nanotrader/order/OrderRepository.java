@@ -15,6 +15,7 @@
  */
 package org.springframework.nanotrader.order;
 
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -32,4 +33,10 @@ public interface OrderRepository extends
     List<Order> findByAccountId(Long accountId);
 
     List<Order> findByAccountIdAndOrderStatus(Long accountId, String orderStatus);
+
+    @Query("SELECT count(o) FROM Order o WHERE o.accountId  = ?1")
+    Long findCountOfOrders(Long accountId);
+
+    @Query("SELECT count(o) FROM Order o WHERE o.accountId  = ?1 and o.orderStatus = ?2")
+    Long findCountOfOrders(Long accountId, String status);
 }

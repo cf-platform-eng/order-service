@@ -12,14 +12,14 @@ public class HoldingController {
     @Autowired
     HoldingRepository holdingRepository;
 
-    @RequestMapping("/count")
-    public long count() {
-        return holdingRepository.count();
-    }
-
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public Holding findById(@PathVariable Long id) {
         return holdingRepository.findOne(id);
+    }
+
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    public Iterable<Holding> findAll() {
+        return holdingRepository.findAll();
     }
 
     @RequestMapping(value = "/", method = RequestMethod.POST)

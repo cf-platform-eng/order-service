@@ -13,6 +13,7 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -47,7 +48,7 @@ public class OrderControllerTest {
 
     @Test
     public void testSaveAndFindAndDelete() {
-        Holding h = holdingController.findById(1L);
+        Holding h = new Holding();
 
         Order o = new Order();
         o.setAccountId(1234L);
@@ -60,6 +61,9 @@ public class OrderControllerTest {
         o.setQuantity(234);
         o.setQuoteSymbol("Foo");
         o.setHolding(h);
+        List<Order> orders = new ArrayList<Order>();
+        orders.add(o);
+        h.setOrders(orders);
 
         Order o2 = orderController.save(o);
         assertNotNull(o2);
@@ -78,6 +82,7 @@ public class OrderControllerTest {
         assertEquals("56.78", "" + o3.getPrice());
         assertEquals(234, o3.getQuantity());
         assertEquals("Foo", o3.getQuoteSymbol());
+        assertNotNull(o.getHolding());
 
         List<Order> l = orderController.search(o3.getAccountId(), null);
         assertNotNull(l);
@@ -95,11 +100,21 @@ public class OrderControllerTest {
         assertTrue(l3.size() > 0);
         for (Order oo : l3) {
             assertEquals(o3.getAccountId(), oo.getAccountId());
+            assertNotNull(oo.getHolding());
             assertEquals("Closed", oo.getOrderStatus());
         }
 
         List<Order> l4 = orderController.search(o3.getAccountId(), "foo");
         assertNotNull(l4);
         assertTrue(l4.size() == 0);
+
+        assertEquals("1", "" + orderController.findCountOfOrders(o3.getAccountId(),  "Closed"));
+        assertEquals("1", "" + orderController.findCountOfOrders(o3.getAccountId(), null));
+        assertTrue(orderController.findCountOfOrders(null, null) > 0);
+    }
+
+    @Test
+    public void testFindAll() {
+        assertNotNull(orderController.findAll());
     }
 }

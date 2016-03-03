@@ -33,11 +33,6 @@ public class HoldingControllerTest {
     HoldingController holdingController;
 
     @Test
-    public void testCount() {
-        assertEquals(1, holdingController.count());
-    }
-
-    @Test
     public void testFind() {
         Long id = 1L;
         Holding h = holdingController.findById(id);
@@ -97,5 +92,10 @@ public class HoldingControllerTest {
         assertNotNull(h);
         assertTrue(h.size() > 0);
         assertEquals(id, h.get(0).getAccountId());
+    }
+
+    @Test
+    public void testFindAll() {
+        assertNotNull(holdingController.findAll());
     }
 }

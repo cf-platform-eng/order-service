@@ -46,9 +46,8 @@ public class Order implements Serializable {
     @NotNull
     private Long accountId;
 
-    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "holdingId")
-    @NotNull
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Holding holding;
 
     private float orderFee;
